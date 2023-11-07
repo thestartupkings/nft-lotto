@@ -3,14 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build:web": "yarn workspace nft-lotto-frontend build",
-    "dev": "yarn workspace nft-lotto-frontend dev"
+    "dev": "concurrently \"yarn workspace nft-lotto-frontend dev\" \"yarn workspace nft-lotto-backend dev\"",
+    "build": "turbo build",
+    "start": "yarn workspace nft-lotto-backend start"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "eslint": "^8.45.0",
+    "turbo": "^1.10.16",
     "typescript": "^5.0.2"
   }
 }
