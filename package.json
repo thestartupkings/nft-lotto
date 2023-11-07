@@ -1,0 +1,16 @@
+{
+  "name": "nft-lotto",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build:web": "yarn workspace nft-lotto-frontend build",
+    "dev": "yarn workspace nft-lotto-frontend dev"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "typescript": "^5.0.2"
+  }
+}
