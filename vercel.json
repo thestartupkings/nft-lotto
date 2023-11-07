@@ -1,3 +1,12 @@
 {
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }],
+  "devCommand": "npm run dev",
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/packages/backend/index.ts",
+      "use": "@vercel/node"
+    }
+  ]
 }
