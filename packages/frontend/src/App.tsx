@@ -22,6 +22,17 @@ function App() {
           <div className="text-xl text-white font-bold text-center">
             in prizes!
           </div>
+
+          <div className="flex items-end justify-center mt-10">
+            <div className="flex items-end">
+              <h3 className="text-4xl text-[#ffc700] font-semibold">21</h3>
+              <h3 className="text-xl text-[#e7974d] mr-2">h</h3>
+              <h3 className="text-4xl text-[#ffc700] font-semibold">48</h3>
+              <h3 className="text-xl text-[#e7974d] mr-2">m</h3>
+            </div>
+
+            <h2 className="text-xl text-white font-semibold">until the draw</h2>
+          </div>
         </div>
       </div>
 
