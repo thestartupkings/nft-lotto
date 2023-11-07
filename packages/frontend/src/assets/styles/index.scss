@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: Kanit, sans-serif;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}

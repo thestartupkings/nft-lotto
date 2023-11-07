@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import HistoryTabMenu from "./components/HistoryTabMenu";
+import AllHistoryCard from "./components/AllHistoryCard";
+import YourHistoryCard from "./components/YourHistoryCard";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="h-screen bg-gradient-to-b from-[#cbd7ef] to-[#999fd0] py-12">
+      <div className="flex flex-col items-center">
+        <h2 className="text-4xl text-[#280d5f] font-bold text-center mb-6">
+          Zombium NFT Lottery
+        </h2>
+
+        <HistoryTabMenu />
+
+        {historyTabMenuIndex === 0 ? <AllHistoryCard /> : <YourHistoryCard />}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
