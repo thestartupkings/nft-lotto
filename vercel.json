@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "devCommand": "yarn dev",
   "buildCommand": "yarn build",
+  "builds": [
+    {
+      "src": "/packages/backend/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
