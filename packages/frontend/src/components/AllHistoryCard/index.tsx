@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from "./Footer";
 
 export default function AllHistoryCard() {
   return (
@@ -17,11 +18,7 @@ export default function AllHistoryCard() {
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="flex justify-between">
-          <button>Details</button>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }
