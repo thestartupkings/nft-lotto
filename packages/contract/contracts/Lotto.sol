@@ -86,12 +86,6 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         payable(msg.sender).transfer(roundByIndex[_roundIndex].prize);
     }
 
-    function roundByBlockHeight(
-        uint256 _blockHeight
-    ) external view returns (Round memory) {
-        return roundByIndex[roundIdByBlockHeight[_blockHeight]];
-    }
-
     function pause() external onlyOwner {
         _pause();
     }
@@ -102,5 +96,24 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function roundByBlockHeight(
+        uint256 _blockHeight
+    ) external view returns (Round memory) {
+        return roundByIndex[roundIdByBlockHeight[_blockHeight]];
+    }
+
+    function rounds(
+        uint256 _skip,
+        uint256 _limit
+    ) external view returns (Round[] memory) {
+        Round[] memory _rounds = new Round[](_limit);
+
+        for (uint256 i = _skip; i < _skip + _limit; i++) {
+            _rounds[i] = roundByIndex[_skip + i];
+        }
+
+        return _rounds;
     }
 }
