@@ -24,9 +24,13 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
     mapping(uint256 => uint256) public roundIdByBlockHeight;
     mapping(uint256 => Round) public roundByIndex;
 
+    address public signer;
+
     event PrizeClaimed(uint256 roundIndex);
 
-    constructor() {}
+    constructor(address _signer) {
+        signer = _signer;
+    }
 
     function startNewRound(
         address _nft,
@@ -74,9 +78,9 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
 
         bytes32 messageHash = ECDSA.toEthSignedMessageHash(message);
-        address signer = ECDSA.recover(messageHash, _signature);
+        address _signer = ECDSA.recover(messageHash, _signature);
 
-        require(signer == owner(), "Invalid signature");
+        require(_signer == signer, "Invalid signature");
 
         // Check if NFT is owned by caller
         require(
@@ -92,6 +96,10 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         payable(msg.sender).transfer(roundByIndex[_roundIndex].prize);
     }
 
+    function setSigner(address _signer) external onlyOwner {
+        signer = _signer;
+    }
+
     function pause() external onlyOwner {
         _pause();
     }
@@ -102,6 +110,10 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function currentRound() external view returns (Round memory) {
+        return roundByIndex[totalRounds - 1];
     }
 
     function roundByBlockHeight(

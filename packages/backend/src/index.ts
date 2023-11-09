@@ -20,6 +20,12 @@ const owner = new ethers.Wallet(process.env.OWNER_PRIVATE_KEY!, provider);
 app.post("/approve-claim", async (req, res) => {
   try {
     const { roundId } = req.body;
+
+    if (!roundId) {
+      res.status(400).send("Round ID is required");
+      return;
+    }
+
     const roundInfo = await lotto.roundByIndex(roundId);
     const block = await provider.getBlock(roundInfo.blockHeight);
 

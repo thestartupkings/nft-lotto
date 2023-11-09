@@ -22,7 +22,7 @@ describe("Lotto", function () {
     const [owner, ali, bob] = await ethers.getSigners();
 
     const Lotto = await ethers.getContractFactory("Lotto");
-    const lotto = await Lotto.deploy();
+    const lotto = await Lotto.deploy(owner.address);
     const TNFT = await ethers.getContractFactory("TNFT");
     const tNFT = await TNFT.deploy();
 
