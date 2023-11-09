@@ -5,6 +5,7 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { chooseTokenId } from "nft-lotto-contract";
 
 describe("Lotto", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -28,26 +29,6 @@ describe("Lotto", function () {
     return { lotto, tNFT, owner, ali, bob };
   }
 
-  /**
-   * Returns randonmly generated number between from and to by using blockhash as seed.
-   * @param blockHash
-   * @param from
-   * @param to
-   */
-  async function chooseTokenId(
-    blockHash: string,
-    from: number,
-    to: number
-  ): Promise<number> {
-    const hash = ethers.keccak256(
-      ethers.toUtf8Bytes(`${blockHash}-${from}-${to}`)
-    );
-    const hex = hash.substring(2, 10);
-    const seed = parseInt(hex, 16);
-    const winner = from + (seed % (to - from + 1));
-    return winner;
-  }
-
   it("Should deploy contract", async function () {
     await loadFixture(deployFixture);
   });
@@ -58,7 +39,7 @@ describe("Lotto", function () {
     const prize = ethers.parseEther("1");
     const blockHeight = currentBlock + 10;
 
-    await lotto.startNewRound(tNFT, blockHeight, prize, {
+    await lotto.startNewRound(tNFT, 1, 100, blockHeight, prize, {
       value: prize,
     });
 
@@ -79,7 +60,7 @@ describe("Lotto", function () {
     const duration = 10;
     const blockHeight = currentBlock + duration;
 
-    await lotto.startNewRound(tNFT, blockHeight, prize, {
+    await lotto.startNewRound(tNFT, 1, 100, blockHeight, prize, {
       value: prize,
     });
 

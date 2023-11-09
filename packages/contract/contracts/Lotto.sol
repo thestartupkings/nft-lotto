@@ -12,6 +12,8 @@ import "hardhat/console.sol";
 contract Lotto is Ownable, Pausable, ReentrancyGuard {
     struct Round {
         address nft;
+        uint256 from;
+        uint256 to;
         uint256 blockHeight;
         uint256 prize;
         address winner;
@@ -28,6 +30,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function startNewRound(
         address _nft,
+        uint256 _from,
+        uint256 _to,
         uint256 _blockHeight,
         uint256 _prize
     ) external payable onlyOwner {
@@ -40,6 +44,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         roundIdByBlockHeight[_blockHeight] = totalRounds;
         roundByIndex[totalRounds] = Round(
             _nft,
+            _from,
+            _to,
             _blockHeight,
             _prize,
             address(0)
