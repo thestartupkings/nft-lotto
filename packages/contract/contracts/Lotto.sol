@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 
-import "hardhat/console.sol";
-
 contract Lotto is Ownable, Pausable, ReentrancyGuard {
     struct Round {
         address nft;
@@ -26,6 +24,15 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     address public signer;
 
+    event RoundStarted(
+        uint256 roundIndex,
+        address nft,
+        uint256 from,
+        uint256 to,
+        uint256 blockHeight,
+        uint256 prize
+    );
+    event RoundPrizeChanged(uint256 roundIndex, uint256 from, uint256 to);
     event PrizeClaimed(uint256 roundIndex);
 
     constructor(address _signer) {
@@ -45,6 +52,12 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
         require(msg.value == _prize, "Prize should be equal to msg.value");
 
+        require(
+            totalRounds == 0 ||
+                (totalRounds > 0 && roundIdByBlockHeight[_blockHeight] != 0),
+            "Round already started"
+        );
+
         roundIdByBlockHeight[_blockHeight] = totalRounds;
         roundByIndex[totalRounds] = Round(
             _nft,
@@ -55,7 +68,53 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
             address(0)
         );
 
+        emit RoundStarted(totalRounds, _nft, _from, _to, _blockHeight, _prize);
+
         totalRounds++;
+    }
+
+    function addPrize(
+        uint256 _roundIndex,
+        uint256 _amount
+    ) external payable onlyOwner {
+        require(
+            block.timestamp < roundByIndex[_roundIndex].blockHeight,
+            "Round already finished"
+        );
+        require(msg.value == _amount, "Prize should be equal to msg.value");
+
+        uint256 oldPrize = roundByIndex[_roundIndex].prize;
+
+        roundByIndex[_roundIndex].prize += msg.value;
+        emit RoundPrizeChanged(
+            _roundIndex,
+            oldPrize,
+            roundByIndex[_roundIndex].prize
+        );
+    }
+
+    // @notice disable for now
+    function _deductPrize(
+        uint256 _roundIndex,
+        uint256 _amount
+    ) internal onlyOwner {
+        require(
+            block.timestamp < roundByIndex[_roundIndex].blockHeight,
+            "Round already finished"
+        );
+
+        uint256 oldPrize = roundByIndex[_roundIndex].prize;
+        require(oldPrize > _amount, "Prize should not be negative");
+
+        roundByIndex[_roundIndex].prize -= _amount;
+
+        payable(owner()).transfer(_amount);
+
+        emit RoundPrizeChanged(
+            _roundIndex,
+            oldPrize,
+            roundByIndex[_roundIndex].prize
+        );
     }
 
     function claimPrize(
