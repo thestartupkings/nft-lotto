@@ -1,17 +1,36 @@
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useAccount, useSignMessage } from "wagmi";
+import { formatEther } from "viem";
 import HistoryTabMenu from "./components/HistoryTabMenu";
 import AllHistoryCard from "./components/AllHistoryCard";
 import YourHistoryCard from "./components/YourHistoryCard";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+
+import { useGetCurrentRound, useGetCurrentRoundWinner } from "@/hooks";
 import { claimPrize } from "./api";
 
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
+  const { data: round } = useGetCurrentRound();
+  const { winner, chosenTokenId } = useGetCurrentRoundWinner();
+  const { address } = useAccount();
+  const isWinner = useMemo(
+    () => !!winner && winner === address,
+    [winner, address]
+  );
+  const { signMessageAsync } = useSignMessage();
+  const handleClaimPrize = useCallback(async () => {
+    if (!address || !isWinner || !round) return;
 
-  useEffect(() => {
-    claimPrize(0);
-  }, []);
+    const addressSingature = await signMessageAsync({ message: address });
+    const { signature } = await claimPrize(
+      Number(round.blockHeight),
+      address,
+      addressSingature
+    );
+    console.log(signature);
+  }, [address, isWinner, round, signMessageAsync]);
 
   return (
     <div>
@@ -23,27 +42,43 @@ function App() {
             Zombium NFT Lottery
           </h2>
 
-          <div className="text-center">
+          <div className="text-center text-white">
             <div className="text-6xl text-[#ffc700] font-semibold mb-3">
-              $50,166
+              {round?.prize ? <>{formatEther(round?.prize)} BONE</> : null}
             </div>
 
             <div className="text-xl text-white font-bold text-center">
               in prizes!
             </div>
 
-            <div className="flex items-end justify-center mt-10">
-              <div className="flex items-end">
-                <h3 className="text-4xl text-[#ffc700] font-semibold">21</h3>
-                <h3 className="text-xl text-[#e7974d] mr-2">h</h3>
-                <h3 className="text-4xl text-[#ffc700] font-semibold">48</h3>
-                <h3 className="text-xl text-[#e7974d] mr-2">m</h3>
+            {winner ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-xl">
+                  The winner is&nbsp;
+                  <span className="text-2xl text-[#ffc700] font-semibold">
+                    {isWinner ? "You 🎉🎉🎉!" : winner}
+                  </span>
+                </p>
+                {isWinner && (
+                  <button onClick={handleClaimPrize}>Claim Prize</button>
+                )}
               </div>
+            ) : chosenTokenId !== undefined ? (
+              <>Selected token ID is {chosenTokenId} but </>
+            ) : (
+              <div className="flex items-end justify-center mt-10">
+                <div className="flex items-end">
+                  <h3 className="text-4xl text-[#ffc700] font-semibold">21</h3>
+                  <h3 className="text-xl text-[#e7974d] mr-2">h</h3>
+                  <h3 className="text-4xl text-[#ffc700] font-semibold">48</h3>
+                  <h3 className="text-xl text-[#e7974d] mr-2">m</h3>
+                </div>
 
-              <h2 className="text-xl text-white font-semibold">
-                until the draw
-              </h2>
-            </div>
+                <h2 className="text-xl text-white font-semibold">
+                  until the draw
+                </h2>
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -83,13 +118,21 @@ function App() {
           </div>
 
           <div className="flex items-center justify-center gap-3">
-            <button className="inline-flex items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold">
+            <a
+              href="https://mint.zombium.app/"
+              target="_blank"
+              className="inline-flex items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold"
+            >
               Mint Zombium
-            </button>
+            </a>
             <span className="text-black">or</span>
-            <button className="inline-flex items-center h-12 bg-[#ed4b9e] px-5 rounded-2xl text-white font-semibold">
+            <a
+              href="https://app.withmantra.com/market/collection/0xb1635a8a344afc0bdc0e8cf26954815644be7370?chain_id=109&auctionType=fixed&sort=2&statuses=created"
+              target="_blank"
+              className="inline-flex items-center h-12 bg-[#ed4b9e] px-5 rounded-2xl text-white font-semibold"
+            >
               Buy Zombium
-            </button>
+            </a>
           </div>
         </div>
       </div>
