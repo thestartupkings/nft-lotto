@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function YourHistoryCard() {
   return (
     <div className="w-full md:w-[756px] bg-white border border-[#e7e3eb] shadow-xl rounded-3xl">
@@ -9,7 +7,7 @@ export default function YourHistoryCard() {
         </div>
       </div>
 
-      <div className="p-6 border-b border-[#e7e3eb]">
+      <div className="p-6 ">
         <div className="flex justify-between">
           <h5 className="text-[#280d5f] text-xl font-semibold">
             Winning NFT Number

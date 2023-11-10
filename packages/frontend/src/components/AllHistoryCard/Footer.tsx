@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FooterExpanded from "./FooterExpanded";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 

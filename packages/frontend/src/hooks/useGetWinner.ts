@@ -14,14 +14,12 @@ export function useGetCurrentRoundWinner() {
   const { blockHash } = useGetBlockHash({ height: round?.[0].blockHeight });
 
   useEffect(() => {
-    console.log(round);
-
     if (!blockHash || !round) return;
     (async () => {
       const tokenId = await chooseTokenId(
         blockHash,
-        Number(round?.[0].from),
-        Number(round?.[0].to)
+        Number(round[0].from),
+        Number(round[0].to)
       );
       setChosenTokenId(BigInt(tokenId));
     })();
@@ -32,7 +30,7 @@ export function useGetCurrentRoundWinner() {
     abi: erc721ABI,
     functionName: "ownerOf",
     args: [chosenTokenId!],
-    enabled: !!chosenTokenId || !!round,
+    enabled: !!chosenTokenId && !!round,
   });
 
   return { winner, chosenTokenId };
@@ -57,7 +55,7 @@ export function useGetRoundWinner({ roundId }: { roundId: number }) {
   }, [blockHash, round]);
 
   const { data: winner } = useContractRead({
-    address: round![0],
+    address: round?.[0],
     abi: erc721ABI,
     functionName: "ownerOf",
     args: [chosenTokenId!],
