@@ -16,6 +16,10 @@ jobs:
       - name: Setup Turbo cache server
         uses: dtinth/setup-github-actions-caching-for-turbo@v1.1.0
 
+      - name: Install
+        run: |
+          yarn install
+
       - name: Build
         run: |
           yarn build
