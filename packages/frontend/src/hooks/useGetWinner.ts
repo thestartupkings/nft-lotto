@@ -10,9 +10,12 @@ export function useGetCurrentRoundWinner() {
   const [chosenTokenId, setChosenTokenId] = useState<bigint | undefined>();
 
   const { data: round } = useGetCurrentRound();
+
   const { blockHash } = useGetBlockHash({ height: round?.blockHeight });
 
   useEffect(() => {
+    console.log(round);
+
     if (!blockHash || !round) return;
     (async () => {
       const tokenId = await chooseTokenId(
@@ -25,11 +28,11 @@ export function useGetCurrentRoundWinner() {
   }, [blockHash, round]);
 
   const { data: winner } = useContractRead({
-    address: round!.nft,
+    address: round?.nft,
     abi: erc721ABI,
     functionName: "ownerOf",
     args: [chosenTokenId!],
-    enabled: !!chosenTokenId && !!round,
+    enabled: !!chosenTokenId || !!round,
   });
 
   return { winner, chosenTokenId };
