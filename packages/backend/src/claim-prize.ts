@@ -1,6 +1,4 @@
-import path from "node:path";
 import { config } from "dotenv";
-import express from "express";
 import { ethers } from "ethers";
 import {
   Lotto__factory,
@@ -8,10 +6,7 @@ import {
 } from "@startupkings/nft-lotto-contract";
 config({ path: "../../.env" });
 
-const app = express();
-
-app.use(express.json());
-app.use(express.static(path.resolve(__dirname, "../../frontend/dist")));
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const provider = new ethers.JsonRpcProvider(process.env.VITE_RPC_URL);
 const lotto = Lotto__factory.connect(
@@ -20,12 +15,19 @@ const lotto = Lotto__factory.connect(
 );
 const owner = new ethers.Wallet(process.env.OWNER_PRIVATE_KEY!, provider);
 
-app.post("/approve-claim", async (req, res) => {
-  try {
-    const { roundId } = req.body;
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
-    if (!roundId) {
-      res.status(400).send("Round ID is required");
+export default async function handler(
+  request: VercelRequest,
+  response: VercelResponse
+) {
+  try {
+    const { roundId = 0 } = request.body;
+
+    if (roundId === undefined) {
+      response.status(400).send("Round ID is required");
       return;
     }
 
@@ -33,7 +35,7 @@ app.post("/approve-claim", async (req, res) => {
     const block = await provider.getBlock(roundInfo.blockHeight);
 
     if (!block || !block.hash) {
-      res.status(400).send("Block isn't mined yet");
+      response.status(400).send("Block isn't mined yet");
       return;
     }
 
@@ -47,16 +49,10 @@ app.post("/approve-claim", async (req, res) => {
       [roundInfo.blockHeight, winner]
     );
     const signature = await owner.signMessage(ethers.getBytes(message));
-    res.send({ signature });
+    response.send({ signature, winner, blockHeight: roundInfo.blockHeight });
   } catch (error) {
     console.error(error);
 
-    res.status(500).send({ error: "Internal Server Error" });
+    response.status(500).send({ error: "Internal Server Error" });
   }
-});
-
-const PORT = parseInt(process.env.PORT || "3000");
-
-app.listen(PORT, () => {
-  console.log(`Express server listening on port ${PORT}`);
-});
+}
