@@ -2,12 +2,10 @@ import { useContractRead } from "wagmi";
 
 import { LotteryContract } from "@/config";
 
-export function useGetRound({ index }: { index: number }) {
-  const { data, isLoading } = useContractRead({
+export function useGetRound({ roundId }: { roundId: number }) {
+  return useContractRead({
     ...LotteryContract,
     functionName: "roundByIndex",
-    args: [BigInt(index)],
+    args: [BigInt(roundId)],
   });
-
-  return { data, isLoading };
 }
