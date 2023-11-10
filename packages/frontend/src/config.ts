@@ -1,4 +1,5 @@
 import { Chain } from "viem";
+import { Lotto__factory } from "@startupkings/nft-lotto-contract";
 
 export const shibarium: Chain = {
   network: "Shibarium",
@@ -20,3 +21,11 @@ export const shibarium: Chain = {
     },
   },
 };
+
+export const VITE_LOTTO_CONTRACT_ADDRESS = import.meta.env
+  .VITE_LOTTO_CONTRACT_ADDRESS as string;
+
+export const LotteryContract = {
+  address: import.meta.env.VITE_LOTTO_CONTRACT_ADDRESS,
+  abi: Lotto__factory.abi,
+} as const;

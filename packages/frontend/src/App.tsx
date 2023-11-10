@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HistoryTabMenu from "./components/HistoryTabMenu";
 import AllHistoryCard from "./components/AllHistoryCard";
 import YourHistoryCard from "./components/YourHistoryCard";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import { claimPrize } from "./api";
 
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
+
+  useEffect(() => {
+    claimPrize(0);
+  }, []);
 
   return (
     <div>
