@@ -91,5 +91,8 @@ describe("Lotto", function () {
     await expect(
       lotto.connect(ali).claimPrize(0, winner, signature)
     ).to.revertedWith("Round already claimed");
+
+    const userRound = await lotto.roundOfUserByIndex(ali.address, 0);
+    expect(userRound[5]).eq(ali.address);
   });
 });

@@ -21,7 +21,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     mapping(uint256 => uint256) public roundIdByBlockHeight;
     mapping(uint256 => Round) public roundByIndex;
-
+    mapping(address => mapping(uint256 => uint256)) private _userRounds;
+    mapping(address => uint256) public userWinCount;
     address public signer;
 
     event RoundStarted(
@@ -149,6 +150,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
 
         roundByIndex[_roundIndex].winner = msg.sender;
+        _userRounds[msg.sender][userWinCount[msg.sender]] = _roundIndex;
+        userWinCount[msg.sender]++;
 
         emit PrizeClaimed(_roundIndex);
 
@@ -171,14 +174,35 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         payable(msg.sender).transfer(address(this).balance);
     }
 
-    function currentRound() external view returns (Round memory) {
-        return roundByIndex[totalRounds - 1];
+    function currentRound() external view returns (Round memory, uint256) {
+        return (roundByIndex[totalRounds - 1], totalRounds - 1);
     }
 
     function roundByBlockHeight(
         uint256 _blockHeight
     ) external view returns (Round memory) {
         return roundByIndex[roundIdByBlockHeight[_blockHeight]];
+    }
+
+    function roundOfUserByIndex(
+        address _user,
+        uint256 _index
+    ) external view returns (Round memory) {
+        return roundByIndex[_userRounds[_user][_index]];
+    }
+
+    function userRounds(
+        address _user,
+        uint256 _skip,
+        uint256 _limit
+    ) external view returns (Round[] memory) {
+        Round[] memory _rounds = new Round[](_limit);
+
+        for (uint256 i = _skip; i < _skip + _limit; i++) {
+            _rounds[i] = roundByIndex[_userRounds[_user][_skip + i]];
+        }
+
+        return _rounds;
     }
 
     function rounds(
