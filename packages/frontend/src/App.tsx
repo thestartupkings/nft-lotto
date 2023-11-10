@@ -13,7 +13,7 @@ function App() {
       <div className="bg-gradient-to-b from-[#7645d9] to-[#5121b1]">
         <Header />
 
-        <sector className="block py-20">
+        <section className="block py-20">
           <h2 className="text-xl text-white font-bold text-center mb-6">
             Zombium NFT Lottery
           </h2>
@@ -40,7 +40,7 @@ function App() {
               </h2>
             </div>
           </div>
-        </sector>
+        </section>
       </div>
 
       <div className="bg-gradient-to-b from-[#cbd7ef] to-[#999fd0] py-12">
@@ -49,7 +49,10 @@ function App() {
             Finished Rounds
           </h2>
 
-          <HistoryTabMenu />
+          <HistoryTabMenu
+            activeIndex={historyTabMenuIndex}
+            setActiveIndex={setHistoryTabMenuIndex}
+          />
 
           {historyTabMenuIndex === 0 ? <AllHistoryCard /> : <YourHistoryCard />}
         </div>
