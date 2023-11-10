@@ -24,11 +24,39 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  try {
-    const { roundId = 0 } = request.body;
+  if (request.method !== "POST") {
+    response.status(400).send("Invalid method");
+    return;
+  }
 
-    if (roundId === undefined) {
+  try {
+    const { roundId, address, signature } = request.body as {
+      roundId: number;
+      address: `0x${string}`;
+      signature: string;
+    };
+
+    // Validate inputs
+    if (roundId === undefined && typeof roundId !== "number") {
       response.status(400).send("Round ID is required");
+      return;
+    }
+    if (address === undefined && typeof address !== "string") {
+      response.status(400).send("Address is required");
+      return;
+    }
+    if (signature === undefined && typeof address !== "string") {
+      response.status(400).send("Signature is required");
+      return;
+    }
+
+    const recoverdAddress = ethers.recoverAddress(
+      ethers.hashMessage(address),
+      signature
+    );
+
+    if (recoverdAddress !== address) {
+      response.status(400).send("Invalid winner");
       return;
     }
 
@@ -49,8 +77,12 @@ export default async function handler(
       ["uint256", "uint256"],
       [roundInfo.blockHeight, winner]
     );
-    const signature = await owner.signMessage(ethers.getBytes(message));
-    response.send({ signature, winner, blockHeight: roundInfo.blockHeight });
+    const result = await owner.signMessage(ethers.getBytes(message));
+    response.send({
+      signature: result,
+      winner,
+      blockHeight: roundInfo.blockHeight,
+    });
   } catch (error) {
     console.error(error);
 

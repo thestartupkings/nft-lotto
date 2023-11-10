@@ -12,12 +12,12 @@ export interface ClaimPrizeResponse {
 export const claimPrize = async (
   roundId: number,
   address: Address,
-  sinature: string
+  signature: string
 ) => {
   const { data } = await api.post<ClaimPrizeResponse>("/claim-prize", {
     roundId,
     address,
-    sinature,
+    signature,
   });
   return data;
 };
