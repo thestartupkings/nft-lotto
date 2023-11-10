@@ -7,13 +7,14 @@ import YourHistoryCard from "./components/YourHistoryCard";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
+import { claimPrize } from "@/api";
 import { useGetCurrentRound, useGetCurrentRoundWinner } from "@/hooks";
-import { claimPrize } from "./api";
 
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
   const { data: round } = useGetCurrentRound();
   const { winner, chosenTokenId } = useGetCurrentRoundWinner();
+
   const { address } = useAccount();
   const isWinner = useMemo(
     () => !!winner && winner === address,
@@ -24,6 +25,7 @@ function App() {
     if (!address || !isWinner || !round) return;
 
     const addressSingature = await signMessageAsync({ message: address });
+
     const { signature } = await claimPrize(
       Number(round.blockHeight),
       address,
