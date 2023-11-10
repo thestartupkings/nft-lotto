@@ -4,7 +4,7 @@ import { Address } from "viem/accounts";
 const api = axios.create({ baseURL: "/api" });
 
 export interface ClaimPrizeResponse {
-  signature: string;
+  signature: Address;
   winner: number;
   blockHeight: number;
 }

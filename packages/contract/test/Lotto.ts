@@ -5,7 +5,7 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { chooseTokenId } from "nft-lotto-contract";
+import { chooseTokenId } from "@startupkings/nft-lotto-contract";
 
 describe("Lotto", function () {
   // We define a fixture to reuse the same setup in every test.

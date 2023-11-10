@@ -78,6 +78,19 @@ export default async function handler(
       [roundInfo.blockHeight, winner]
     );
     const result = await owner.signMessage(ethers.getBytes(message));
+
+    const recovered = ethers.recoverAddress(
+      ethers.hashMessage(ethers.getBytes(message)),
+      result
+    );
+    console.log({
+      recovered,
+      blockHeight: roundInfo.blockHeight,
+      winner,
+      roundInfo,
+      roundId,
+    });
+
     response.send({
       signature: result,
       winner,
