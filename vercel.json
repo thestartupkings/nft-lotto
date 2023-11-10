@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "github": {
+    "enabled": true
+  },
+  "builds": [
+    {
+      "src": "/packages/backend/src/*.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "/packages/frontend/dist/*",
+      "use": "@now/static"
+    },
+    {
+      "src": "/packages/frontend/dist/assets/*",
+      "use": "@now/static"
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/packages/backend/src/$1.ts" },
+    { "handle": "filesystem" },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/packages/frontend/dist/assets/$1"
+    },
+    {
+      "src": "/(.*).(js|css|ico|svg)",
+      "dest": "/packages/frontend/dist/$1.$2"
+    },
+    { "src": "/(.*)", "dest": "/packages/frontend/dist/index.html" }
+  ]
+}
