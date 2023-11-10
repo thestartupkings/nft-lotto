@@ -4,16 +4,17 @@ import {
   Lotto__factory,
   chooseTokenId,
 } from "@startupkings/nft-lotto-contract";
-config({ path: "../../.env" });
-
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const provider = new ethers.JsonRpcProvider(process.env.VITE_RPC_URL);
-const lotto = Lotto__factory.connect(
-  process.env.VITE_LOTTO_CONTRACT_ADDRESS!,
-  provider
-);
-const owner = new ethers.Wallet(process.env.OWNER_PRIVATE_KEY!, provider);
+config({ path: "../../.env" });
+
+const VITE_RPC_URL = process.env.VITE_RPC_URL;
+const VITE_LOTTO_CONTRACT_ADDRESS = process.env.VITE_LOTTO_CONTRACT_ADDRESS!;
+const OWNER_PRIVATE_KEY = process.env.OWNER_PRIVATE_KEY!;
+
+const provider = new ethers.JsonRpcProvider(VITE_RPC_URL);
+const lotto = Lotto__factory.connect(VITE_LOTTO_CONTRACT_ADDRESS, provider);
+const owner = new ethers.Wallet(OWNER_PRIVATE_KEY!, provider);
 
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
@@ -53,6 +54,6 @@ export default async function handler(
   } catch (error) {
     console.error(error);
 
-    response.status(500).send({ error: "Internal Server Error" });
+    response.status(500).send({ error: "Internal Server Error", data: error });
   }
 }
