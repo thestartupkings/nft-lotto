@@ -24,8 +24,8 @@ function App() {
   const { address } = useAccount();
 
   const { signMessageAsync } = useSignMessage();
-  const { claim, isLoading, isSuccess } = useClaimPrize({
-    roundId: BigInt(Number(totalRounds) - 1) || BigInt(0),
+  const { claim } = useClaimPrize({
+    roundId: round?.[1] || BigInt(0),
     tokenId: chosenTokenId || BigInt(0),
     signature: signature || "0x",
     enabled: !!totalRounds && !!chosenTokenId && !!signature,
@@ -36,7 +36,7 @@ function App() {
     [winner, address]
   );
   const hasClaimed = useMemo(() => {
-    return !!round?.winner;
+    return !!round?.[0].winner;
   }, [round]);
 
   const handleClaimPrize = useCallback(async () => {
@@ -57,8 +57,6 @@ function App() {
     claim?.();
   }, [signature, claim]);
 
-  console.log(isLoading, isSuccess);
-
   return (
     <div>
       <div className="bg-gradient-to-b from-[#7645d9] to-[#5121b1]">
@@ -71,7 +69,9 @@ function App() {
 
           <div className="text-center text-white">
             <div className="text-6xl text-[#ffc700] font-semibold mb-3">
-              {round?.prize ? <>{formatEther(round?.prize)} BONE</> : null}
+              {round?.[0].prize ? (
+                <>{formatEther(round?.[0].prize)} BONE</>
+              ) : null}
             </div>
 
             <div className="text-xl text-white font-bold text-center">
