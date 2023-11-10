@@ -2,7 +2,10 @@ import path from "node:path";
 import { config } from "dotenv";
 import express from "express";
 import { ethers } from "ethers";
-import { Lotto__factory, chooseTokenId } from "nft-lotto-contract";
+import {
+  Lotto__factory,
+  chooseTokenId,
+} from "@startupkings/nft-lotto-contract";
 config({ path: "../../.env" });
 
 const app = express();

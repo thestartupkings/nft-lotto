@@ -1,11 +1,12 @@
 {
-  "name": "nft-lotto-contract",
+  "name": "@startupkings/nft-lotto-contract",
   "version": "0.0.1",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "postinstall": "hardhat typechain",
-    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "yarn build",
+    "build": "hardhat typechain && tsc -p tsconfig.build.json",
     "deploy:testnet": "hardhat run \"scripts/deploy.ts\" --network goerli",
     "test": "hardhat test"
   },
