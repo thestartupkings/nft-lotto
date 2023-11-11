@@ -13,15 +13,15 @@ export default function AllHistoryCard() {
   });
 
   return (
-    <div className="w-full md:w-[756px] bg-white border border-[#e7e3eb] shadow-xl rounded-3xl">
+    <div className="w-full md:w-[756px] bg-[#1c1749] border border-[#e7e3eb] shadow-xl rounded-3xl">
       <div className="p-6 rounded-t-3xl border-b border-[#e7e3eb]">
         <div className="flex justify-between">
-          <div className="flex items-end gap-3">
-            <h5 className="text-[#280d5f] text-xl font-semibold">Round</h5>
-            <span>#{currentRound}</span>
+          <div className="flex items-end gap-3 text-white">
+            <h5 className="text-xl font-semibold">Round</h5>
+            <span className="text-gray-300 font-semibold">#{currentRound}</span>
           </div>
 
-          <div className="flex items-center gap-3 text-[#280d5f]">
+          <div className="flex items-center gap-3 text-white">
             <button
               className=""
               onClick={() => setCurrentRound((prev) => prev - 1)}
@@ -53,7 +53,7 @@ export default function AllHistoryCard() {
       <div className="p-6 ">
         <div className="flex justify-between">
           <div>
-            <h5 className="text-[#280d5f] text-xl font-semibold">
+            <h5 className="text-white text-xl font-semibold">
               Chosen NFT Number
             </h5>
             {winner && <p>Claimed by {winner}</p>}
