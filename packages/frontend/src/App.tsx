@@ -13,6 +13,7 @@ import {
   useGetCurrentRound,
   useGetCurrentRoundWinner,
 } from "@/hooks";
+import { Fairness } from "./components";
 
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
@@ -81,45 +82,45 @@ function App() {
               </>
             ) : null}
 
-            {winner ? (
-              !hasClaimed ? (
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <p className="text-xl">
-                    The winner is&nbsp;
-                    <span className="text-2xl text-[#ffc700] font-semibold">
-                      {isWinner ? "You 🎉🎉🎉!" : winner}
+            <div className="my-2">
+              {winner ? (
+                !hasClaimed ? (
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p className="text-xl">
+                      The winner is&nbsp;
+                      <span className="text-2xl text-[#ffc700] font-semibold">
+                        {isWinner ? "You 🎉🎉🎉!" : winner}
+                      </span>
+                    </p>
+                    {isWinner && (
+                      <button
+                        onClick={handleClaimPrize}
+                        className="max-w-[8rem] items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold"
+                      >
+                        Claim Prize
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    Already claimed by&nbsp;
+                    <span className="text-xl text-[#ffc700] font-semibold">
+                      {winner}
                     </span>
-                  </p>
-                  {isWinner && (
-                    <button
-                      onClick={handleClaimPrize}
-                      className="max-w-[8rem] items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold"
-                    >
-                      Claim Prize
-                    </button>
-                  )}
+                  </>
+                )
+              ) : chosenTokenId !== undefined ? (
+                <div className="leading-6">
+                  Selected token ID is&nbsp;
+                  <span className="text-2xl text-[#ffc700] font-semibold">
+                    {chosenTokenId.toString()}
+                  </span>
+                  &nbsp;but not minted yet.
                 </div>
               ) : (
-                <>
-                  Already claimed by&nbsp;
-                  <span className="text-xl text-[#ffc700] font-semibold">
-                    {winner}
-                  </span>
-                </>
-              )
-            ) : chosenTokenId !== undefined ? (
-              <div className="leading-6">
-                Selected token ID is&nbsp;
-                <span className="text-2xl text-[#ffc700] font-semibold">
-                  {chosenTokenId.toString()}
-                </span>
-                &nbsp;but not minted yet.
-              </div>
-            ) : (
-              <div className="flex items-end justify-center mt-10">
-                <h2 className="text-xl text-white font-semibold">
+                <div className="flex items-end justify-center mt-10">
                   {config.chains && round ? (
-                    <div>
+                    <h2 className="text-xl text-white font-semibold">
                       Winner will be chosen from this block&nbsp;
                       <a
                         href={`${config.chains[0].blockExplorers?.default.url}/block/${round?.[0].blockHeight}`}
@@ -127,11 +128,11 @@ function App() {
                       >
                         {round[0].blockHeight.toString()}
                       </a>
-                    </div>
+                    </h2>
                   ) : null}
-                </h2>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </section>
       </div>
@@ -152,15 +153,19 @@ function App() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-5xl font-semibold text-[#7645d9] mb-5">
-            How To Play
-          </h2>
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col items-center justify-center">
+            <h2 className="text-5xl font-semibold text-[#7645d9] mb-5">
+              How To Play
+            </h2>
 
-          <div className="text-center">
-            If the digits on your tickets match the winning numbers in the
-            correct order, you win a portion of the prize pool.
+            <p className="text-center text-2xl">
+              We choose the NFT number from the block hash of the round block.
+              <br />
+              If you own the NFT with the chosen number, you win the prize!
+            </p>
           </div>
+          <Fairness />
         </div>
 
         <hr className="my-8" />

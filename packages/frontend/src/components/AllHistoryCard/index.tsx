@@ -51,7 +51,7 @@ export default function AllHistoryCard() {
       <div className="p-6 ">
         <div className="flex justify-between">
           <h5 className="text-[#280d5f] text-xl font-semibold">
-            Winning NFT Number
+            Chosen NFT Number
           </h5>
 
           <div>
