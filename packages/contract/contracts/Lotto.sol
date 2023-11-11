@@ -55,8 +55,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
         require(
             totalRounds == 0 ||
-                (totalRounds > 0 && roundIdByBlockHeight[_blockHeight] != 0),
-            "Round already started"
+                (totalRounds > 0 && roundIdByBlockHeight[_blockHeight] == 0),
+            "Round already exist for given block height"
         );
 
         roundIdByBlockHeight[_blockHeight] = totalRounds;
