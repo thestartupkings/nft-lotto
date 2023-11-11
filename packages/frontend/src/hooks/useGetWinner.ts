@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useContractRead, erc721ABI } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
+import { useContractRead, erc721ABI, useAccount } from "wagmi";
 import { chooseTokenId } from "@startupkings/nft-lotto-contract";
 
 import { useGetRound } from "./useGetRound";
@@ -7,43 +7,24 @@ import { useGetBlockHash } from "./useGetBlockHash";
 import { useGetCurrentRound } from "./useGetCurrentRound";
 
 export function useGetCurrentRoundWinner() {
-  const [chosenTokenId, setChosenTokenId] = useState<bigint | undefined>();
-
   const { data: round } = useGetCurrentRound();
-
-  const { blockHash } = useGetBlockHash({ height: round?.[0].blockHeight });
-
-  useEffect(() => {
-    if (!blockHash || !round) return;
-    (async () => {
-      const tokenId = await chooseTokenId(
-        blockHash,
-        Number(round[0].from),
-        Number(round[0].to)
-      );
-      setChosenTokenId(BigInt(tokenId));
-    })();
-  }, [blockHash, round]);
-
-  const { data: winner } = useContractRead({
-    address: round?.[0].nft,
-    abi: erc721ABI,
-    functionName: "ownerOf",
-    args: [chosenTokenId!],
-    enabled: !!chosenTokenId && !!round,
-  });
-
-  return { winner, chosenTokenId };
+  return useGetRoundWinner({ roundId: Number(round?.[1] || BigInt(0)) });
 }
 
 export function useGetRoundWinner({ roundId }: { roundId: number }) {
   const [chosenTokenId, setChosenTokenId] = useState<bigint | undefined>();
 
-  const { data: round } = useGetRound({ roundId });
-  const { blockHash } = useGetBlockHash({ height: round?.[3] });
+  const { data: round, isLoading: isLoadingRound } = useGetRound({ roundId });
+  const { blockHash, isLoading: isLoadingBlock } = useGetBlockHash({
+    height: round?.[3],
+    enabled: !isLoadingRound,
+  });
+  const { address } = useAccount();
+
+  const isLoadingWinner = isLoadingRound || isLoadingBlock;
 
   useEffect(() => {
-    if (!blockHash || !round) return;
+    if (!blockHash || !round || isLoadingWinner) return;
     (async () => {
       const tokenId = await chooseTokenId(
         blockHash,
@@ -52,15 +33,29 @@ export function useGetRoundWinner({ roundId }: { roundId: number }) {
       );
       setChosenTokenId(BigInt(tokenId));
     })();
-  }, [blockHash, round]);
+  }, [blockHash, round, isLoadingWinner]);
 
-  const { data: winner } = useContractRead({
+  const { data: winner, isLoading: isLoadingOwner } = useContractRead({
     address: round?.[0],
     abi: erc721ABI,
     functionName: "ownerOf",
     args: [chosenTokenId!],
-    enabled: !!chosenTokenId && !!round,
+    enabled: !!chosenTokenId && !!round && !isLoadingRound && !isLoadingBlock,
   });
 
-  return { winner, chosenTokenId };
+  const isWinner = useMemo(
+    () => !!winner && winner === address,
+    [address, winner]
+  );
+
+  const isLoading = isLoadingWinner || isLoadingOwner;
+
+  return {
+    winner,
+    isWinner,
+    chosenTokenId,
+    round,
+    claimedBy: round?.[5],
+    isLoading,
+  };
 }

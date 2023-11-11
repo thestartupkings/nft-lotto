@@ -8,7 +8,9 @@ export default function AllHistoryCard() {
   const [currentRound, setCurrentRound] = useState(0);
   const { data: totalRounds } = useGetTotalRounds();
 
-  const { chosenTokenId } = useGetRoundWinner({ roundId: currentRound });
+  const { chosenTokenId, winner, isLoading } = useGetRoundWinner({
+    roundId: currentRound,
+  });
 
   return (
     <div className="w-full md:w-[756px] bg-white border border-[#e7e3eb] shadow-xl rounded-3xl">
@@ -50,15 +52,19 @@ export default function AllHistoryCard() {
 
       <div className="p-6 ">
         <div className="flex justify-between">
-          <h5 className="text-[#280d5f] text-xl font-semibold">
-            Chosen NFT Number
-          </h5>
-
           <div>
-            <BallWithNumber
-              color="#D750B2"
-              number={(chosenTokenId || BigInt(0)).toString()}
-            />
+            <h5 className="text-[#280d5f] text-xl font-semibold">
+              Chosen NFT Number
+            </h5>
+            {winner && <p>Claimed by {winner}</p>}
+          </div>
+          <div>
+            {!!chosenTokenId && (
+              <BallWithNumber
+                color="#D750B2"
+                number={isLoading ? "" : chosenTokenId.toString()}
+              />
+            )}
           </div>
         </div>
       </div>

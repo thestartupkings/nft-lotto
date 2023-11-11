@@ -10,7 +10,7 @@ export function useGetBlockHash({
   enabled?: boolean;
 }) {
   const [blockHash, setBlockHash] = useState<string | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const client = useConfig();
 
   useEffect(() => {
@@ -25,5 +25,5 @@ export function useGetBlockHash({
     })();
   }, [height, client, enabled]);
 
-  return { blockHash, loading };
+  return { blockHash, isLoading };
 }
