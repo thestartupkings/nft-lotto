@@ -55,7 +55,10 @@ export function useGetRoundWinner({ roundId }: { roundId: number }) {
     isWinner,
     chosenTokenId,
     round,
-    claimedBy: round?.[5],
+    claimedBy:
+      round?.[5] && round[5] !== "0x0000000000000000000000000000000000000000"
+        ? round[5]
+        : undefined,
     isLoading,
   };
 }

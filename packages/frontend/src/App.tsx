@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useConfig } from "wagmi";
 import { formatEther } from "viem";
 import HistoryTabMenu from "./components/HistoryTabMenu";
@@ -21,20 +21,16 @@ function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
 
   const { data: round } = useGetCurrentRound();
-  const { winner, isWinner, chosenTokenId } = useGetCurrentRoundWinner();
+  const { winner, isWinner, chosenTokenId, claimedBy } =
+    useGetCurrentRoundWinner();
 
   const config = useConfig();
 
   const { claim } = useClaimPrize({
-    roundId: round?.[1] || BigInt(0),
-    tokenId: chosenTokenId || BigInt(0),
+    roundId: round?.[1],
+    tokenId: chosenTokenId,
     enabled: isWinner,
   });
-  const hasClaimed = useMemo(() => {
-    return (
-      round && round[0].winner !== "0x0000000000000000000000000000000000000000"
-    );
-  }, [round]);
 
   return (
     <div className="bg-[#0A062F]">
@@ -77,7 +73,7 @@ function App() {
 
             <div className="my-2">
               {winner ? (
-                !hasClaimed ? (
+                !claimedBy ? (
                   <div className="flex flex-col items-center justify-center gap-2">
                     <p className="text-xl">
                       The winner is&nbsp;
@@ -98,7 +94,7 @@ function App() {
                   <>
                     Already claimed by&nbsp;
                     <span className="text-xl text-[#ffc700] font-semibold">
-                      {winner}
+                      {claimedBy}
                     </span>
                   </>
                 )
