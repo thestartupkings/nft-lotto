@@ -58,7 +58,10 @@ export default function ConnectWallet() {
               }
 
               return (
-                <div style={{ display: "flex", gap: 12 }}>
+                <div
+                  style={{ display: "flex", gap: 12 }}
+                  className="text-white"
+                >
                   <button
                     onClick={openChainModal}
                     style={{ display: "flex", alignItems: "center" }}

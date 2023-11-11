@@ -1,10 +1,9 @@
-import React from "react";
 import xLogo from "../assets/images/x.svg";
 import shibaLogo from "../assets/images/shiba.svg";
 
 export default function Footer() {
   return (
-    <div className=" bg-[#27262c] px-10 py-10 text-white">
+    <div className="px-10 py-10 text-white">
       <div className="container mx-auto flex justify-between items-center">
         <span>Copyright © 2023 Zombium - All Rights Reserved.</span>
         <div className="flex gap-5">

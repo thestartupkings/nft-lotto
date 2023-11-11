@@ -27,7 +27,7 @@ export async function chooseTokenId(
 export function Fairness() {
   return (
     <div className="md:max-w-3xl mx-auto flex flex-col items-center justify-center">
-      <h2 className="text-5xl font-semibold text-[#7645d9] mb-5">
+      <h2 className="text-5xl font-semibold text-white mb-5">
         How To Verify fairness
       </h2>
       <SyntaxHighlighter

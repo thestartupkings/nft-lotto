@@ -15,6 +15,9 @@ import {
 } from "@/hooks";
 import { Fairness } from "./components";
 
+import zombie1Img from "./assets/images/zombie-1.png";
+import zombie2Img from "./assets/images/zombie-2.png";
+
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
   const [signature, setSignature] = useState<Address | undefined>(undefined);
@@ -61,14 +64,31 @@ function App() {
   }, [signature, claim]);
 
   return (
-    <div>
-      <div className="bg-gradient-to-b from-[#7645d9] to-[#5121b1]">
+    <div className="bg-[#0A062F]">
+      <div>
         <Header />
 
         <section className="block py-20">
-          <h2 className="text-xl text-white font-bold text-center mb-6">
-            Zombium NFT Lottery
-          </h2>
+          <div className="flex justify-center items-center">
+            <div>
+              <img src={zombie2Img} className="-scale-x-100" />
+            </div>
+            <div>
+              <h2 className="text-3xl text-white font-bold text-center mb-6">
+                Zombium NFT Lottery
+              </h2>
+
+              <p className="max-w-xl text-slate-300 font-medium mx-auto text-center">
+                Zombium Lottery is an innovative lottery game that teaches you
+                all things technical about blockchains. Learn to write smart
+                contracts by making your own crypto-collectibles game.
+              </p>
+            </div>
+
+            <div>
+              <img src={zombie1Img} />
+            </div>
+          </div>
 
           <div className="text-center text-white">
             {round ? (
@@ -137,9 +157,9 @@ function App() {
         </section>
       </div>
 
-      <div className="bg-gradient-to-b from-[#cbd7ef] to-[#999fd0] py-12">
+      <div className="py-12">
         <div className="flex flex-col items-center">
-          <h2 className="text-4xl text-[#280d5f] font-bold text-center mb-6">
+          <h2 className="text-4xl text-[white] font-bold text-center mb-6">
             Finished Rounds
           </h2>
 
@@ -155,11 +175,11 @@ function App() {
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col items-center justify-center">
-            <h2 className="text-5xl font-semibold text-[#7645d9] mb-5">
+            <h2 className="text-5xl font-semibold text-white mb-5">
               How To Play
             </h2>
 
-            <p className="text-center text-2xl">
+            <p className="text-center text-gray-300">
               We choose the NFT number from the block hash of the round block.
               <br />
               If you own the NFT with the chosen number, you win the prize!
@@ -168,9 +188,8 @@ function App() {
           <Fairness />
         </div>
 
-        <hr className="my-8" />
-        <div className="text-center">
-          <div className="text-3xl text-[#7645d9] font-semibold mb-8">
+        <div className="text-center mt-8">
+          <div className="text-3xl text-white font-semibold mb-8">
             Just Grab Zombium <br />
             <span className="text-lg">to Jump into Lottery</span>
           </div>
