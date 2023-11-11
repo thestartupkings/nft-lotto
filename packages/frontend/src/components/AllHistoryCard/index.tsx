@@ -1,15 +1,21 @@
+import { useState } from "react";
 import { FaAngleLeft, FaAngleRight, FaAngleDoubleRight } from "react-icons/fa";
 
 import { BallWithNumber } from "@/svgs";
-import { useGetRoundWinner, useGetTotalRounds } from "@/hooks";
-import { useState } from "react";
+import { useClaimPrize, useGetRoundWinner, useGetTotalRounds } from "@/hooks";
 
 export default function AllHistoryCard() {
   const [currentRound, setCurrentRound] = useState(0);
   const { data: totalRounds } = useGetTotalRounds();
 
-  const { chosenTokenId, winner, isLoading } = useGetRoundWinner({
+  const { chosenTokenId, isWinner, isLoading, claimedBy } = useGetRoundWinner({
     roundId: currentRound,
+  });
+
+  const { claim } = useClaimPrize({
+    roundId: BigInt(currentRound),
+    tokenId: chosenTokenId,
+    enabled: isWinner,
   });
 
   return (
@@ -56,7 +62,17 @@ export default function AllHistoryCard() {
             <h5 className="text-white text-xl font-semibold">
               Chosen NFT Number
             </h5>
-            {winner && <p>Claimed by {winner}</p>}
+            {claimedBy ? (
+              <p>Claimed by {claimedBy}</p>
+            ) : isWinner ? (
+              <button
+                onClick={claim}
+                className="max-w-[8rem] items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold"
+                disabled={isLoading}
+              >
+                Claim Prize
+              </button>
+            ) : null}
           </div>
           <div>
             {!!chosenTokenId && (
