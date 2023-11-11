@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAccount, useSignMessage, useConfig } from "wagmi";
-import { formatEther, Address } from "viem";
+import { useMemo, useState } from "react";
+import { useConfig } from "wagmi";
+import { formatEther } from "viem";
 import HistoryTabMenu from "./components/HistoryTabMenu";
 import AllHistoryCard from "./components/AllHistoryCard";
 import YourHistoryCard from "./components/YourHistoryCard";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
-import { claimPrize } from "@/api";
 import {
   useClaimPrize,
   useGetCurrentRound,
@@ -17,48 +16,22 @@ import { Fairness } from "./components";
 
 function App() {
   const [historyTabMenuIndex, setHistoryTabMenuIndex] = useState(0);
-  const [signature, setSignature] = useState<Address | undefined>(undefined);
+
   const { data: round } = useGetCurrentRound();
-  const { winner, chosenTokenId } = useGetCurrentRoundWinner();
-  const { address } = useAccount();
+  const { winner, isWinner, chosenTokenId } = useGetCurrentRoundWinner();
+
   const config = useConfig();
 
-  const { signMessageAsync } = useSignMessage();
   const { claim } = useClaimPrize({
     roundId: round?.[1] || BigInt(0),
     tokenId: chosenTokenId || BigInt(0),
-    signature: signature || "0x",
-    enabled:
-      round?.[1] !== undefined && chosenTokenId !== undefined && !!signature,
+    enabled: isWinner,
   });
-
-  const isWinner = useMemo(
-    () => !!winner && winner === address,
-    [winner, address]
-  );
   const hasClaimed = useMemo(() => {
     return (
       round && round[0].winner !== "0x0000000000000000000000000000000000000000"
     );
   }, [round]);
-
-  const handleClaimPrize = useCallback(async () => {
-    if (!address || !isWinner || !round) return;
-
-    const addressSingature = await signMessageAsync({ message: address });
-
-    const { signature } = await claimPrize(
-      Number(round[1]),
-      address,
-      addressSingature
-    );
-    setSignature(signature);
-  }, [address, isWinner, round, signMessageAsync]);
-
-  useEffect(() => {
-    if (!signature) return;
-    claim?.();
-  }, [signature, claim]);
 
   return (
     <div>
@@ -94,7 +67,7 @@ function App() {
                     </p>
                     {isWinner && (
                       <button
-                        onClick={handleClaimPrize}
+                        onClick={claim}
                         className="max-w-[8rem] items-center h-12 bg-[#1fc7d4] px-5 rounded-2xl text-white font-semibold"
                       >
                         Claim Prize
@@ -121,13 +94,15 @@ function App() {
                 <div className="flex items-end justify-center mt-10">
                   {config.chains && round ? (
                     <h2 className="text-xl text-white font-semibold">
-                      Winner will be chosen from this block&nbsp;
+                      Winner will be chosen from&nbsp;
                       <a
                         href={`${config.chains[0].blockExplorers?.default.url}/block/${round?.[0].blockHeight}`}
                         target="_blank"
+                        className="text-[#ffc700] font-semibold"
                       >
                         {round[0].blockHeight.toString()}
                       </a>
+                      &nbsp;block hash.
                     </h2>
                   ) : null}
                 </div>
