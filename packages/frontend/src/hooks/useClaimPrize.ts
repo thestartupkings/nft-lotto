@@ -26,7 +26,11 @@ export function useClaimPrize({
     ...LotteryContract,
     functionName: "claimPrize",
     args: [roundId!, tokenId!, signature!],
-    enabled: !!roundId && !!tokenId && !!signature && enabled,
+    enabled:
+      roundId !== undefined &&
+      tokenId !== undefined &&
+      signature !== undefined &&
+      enabled,
   });
 
   const { data, write } = useContractWrite(config);
@@ -37,7 +41,8 @@ export function useClaimPrize({
   const { signMessageAsync } = useSignMessage();
 
   const claim = useCallback(async () => {
-    if (!address || !roundId) return;
+    if (!address || roundId === undefined) return;
+    console.log(`claiming...`, address, roundId);
 
     const addressSingature = await signMessageAsync({ message: address });
 
@@ -51,6 +56,7 @@ export function useClaimPrize({
 
   useEffect(() => {
     if (!signature) return;
+    console.log(`first`);
     write?.();
   }, [signature, write]);
 

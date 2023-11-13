@@ -63,7 +63,7 @@ export default function AllHistoryCard() {
               Chosen NFT Number
             </h5>
             {claimedBy ? (
-              <p>Claimed by {claimedBy}</p>
+              <p className="text-white">Claimed by {claimedBy}</p>
             ) : isWinner ? (
               <button
                 onClick={claim}
