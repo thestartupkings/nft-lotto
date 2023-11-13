@@ -1,6 +1,6 @@
 name: Deployment
 
-concurrency: production
+concurrency: Production
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     environment:
-      name: production
+      name: Production
       url: https://nft-lotto.vercel.app
     steps:
       - uses: actions/checkout@v2
