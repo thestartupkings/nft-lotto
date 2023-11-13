@@ -31,3 +31,5 @@ export const LotteryContract = {
 } as const;
 
 export const IS_PROD = (import.meta.env.VITE_IS_PROD as string) === "true";
+
+console.log(VITE_LOTTO_CONTRACT_ADDRESS, import.meta.env.VITE_ALCHEMY_ID);
