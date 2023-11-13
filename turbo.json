@@ -1,11 +1,18 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "@startupkings/nft-lotto-contract#build": {
+      "outputs": ["dist/**"]
+    },
+    "nft-lotto-backend#build": {
+      "dependsOn": ["nft-lotto-frontend#build"]
+    },
     "nft-lotto-frontend#build": {
-      "dependsOn": ["@startupkings/nft-lotto-contract#build"]
+      "dependsOn": ["@startupkings/nft-lotto-contract#build"],
+      "outputs": ["dist/**"]
     },
     "build": {
-      "outputs": ["dist/**"]
+      "dependsOn": ["^build"]
     }
   }
 }

@@ -7,7 +7,7 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "prebuild": "hardhat typechain",
-    "build": "yarn prebuild && tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "deploy:testnet": "hardhat run \"scripts/deploy.ts\" --network goerli",
     "test": "hardhat test"
   },
