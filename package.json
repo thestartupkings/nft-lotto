@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "concurrently \"yarn workspace nft-lotto-frontend dev\" \"yarn workspace nft-lotto-backend dev\"",
-    "build": "turbo build"
+    "build": "turbo build",
+    "deploy": "yarn build && vercel deploy"
   },
   "workspaces": [
     "packages/*"
