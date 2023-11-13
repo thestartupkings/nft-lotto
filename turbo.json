@@ -1,7 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "@startupkings/nft-lotto-contract#generate": {
+      "outputs": ["src/types/**"]
+    },
     "@startupkings/nft-lotto-contract#build": {
+      "dependsOn": ["@startupkings/nft-lotto-contract#generate"],
       "outputs": ["dist/**"]
     },
     "nft-lotto-backend#build": {

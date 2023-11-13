@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn build",
-    "prebuild": "hardhat typechain",
+    "generate": "hardhat typechain",
     "build": "tsc -p tsconfig.build.json",
     "deploy:testnet": "hardhat run \"scripts/deploy.ts\" --network goerli",
     "test": "hardhat test"
