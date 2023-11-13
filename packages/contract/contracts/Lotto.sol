@@ -195,20 +195,32 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         address _user,
         uint256 _skip,
         uint256 _limit
-    ) external view returns (Round[] memory) {
+    ) external view returns (Round[] memory, uint256[] memory) {
+        require(
+            _skip + _limit <= userWinCount[_user],
+            "Skip should be less than win count"
+        );
+
+        uint256[] memory _roundIds = new uint256[](_limit);
         Round[] memory _rounds = new Round[](_limit);
 
         for (uint256 i = _skip; i < _skip + _limit; i++) {
-            _rounds[i] = roundByIndex[_userRounds[_user][_skip + i]];
+            _roundIds[i] = _userRounds[_user][_skip + i];
+            _rounds[i] = roundByIndex[_roundIds[i]];
         }
 
-        return _rounds;
+        return (_rounds, _roundIds);
     }
 
     function rounds(
         uint256 _skip,
         uint256 _limit
     ) external view returns (Round[] memory) {
+        require(
+            _skip + _limit <= totalRounds,
+            "Skip should be less than total rounds"
+        );
+
         Round[] memory _rounds = new Round[](_limit);
 
         for (uint256 i = _skip; i < _skip + _limit; i++) {
