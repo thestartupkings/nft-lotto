@@ -6,9 +6,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { FC, ReactNode } from "react";
-import { shibarium } from "./config";
-
-const IS_PROD = false;
+import { shibarium, IS_PROD } from "./config";
 
 const CHAINS = IS_PROD ? [shibarium] : [goerli];
 
