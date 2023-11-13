@@ -10,13 +10,17 @@ jobs:
   deploy:
     permissions: write-all
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: production
+      url: https://nft-lotto.vercel.app
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v4.0.0
         with:
           node-version: "18.x"
           cache: "yarn"
+
+      - run: echo 'Hi ${{ env.VITE_LOTTO_CONTRACT_ADDRESS }}'
 
       - name: Setup Turbo cache server
         uses: dtinth/setup-github-actions-caching-for-turbo@v1.1.0
