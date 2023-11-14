@@ -13,20 +13,18 @@ jobs:
     environment:
       name: Production
       url: https://nft-lotto.vercel.app
+    env:
+      VITE_ALCHEMY_ID: ${{ vars.VITE_ALCHEMY_ID }}
+      VITE_RPC_URL: ${{ vars.VITE_RPC_URL }}
+      VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID }}
+      VITE_LOTTO_CONTRACT_ADDRESS: ${{ vars.VITE_LOTTO_CONTRACT_ADDRESS }}
+      VITE_IS_PROD: ${{ vars.VITE_IS_PROD }}
     steps:
-      - name: Check vars
-        run: echo "${{ toJson(vars) }}"
-
-      - name: Check env
-        run: echo "${{ toJson(env) }}"
-
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v4.0.0
         with:
           node-version: "18.x"
           cache: "yarn"
-
-      - run: echo 'Hi ${{ env.VITE_LOTTO_CONTRACT_ADDRESS }}'
 
       - name: Setup Turbo cache server
         uses: dtinth/setup-github-actions-caching-for-turbo@v1.1.0
