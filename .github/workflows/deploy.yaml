@@ -6,6 +6,12 @@ on:
   push:
     branches:
       - "main"
+  workflow_dispatch:
+    environment:
+      description: "Environment to deploy"
+      type: environment
+      required: true
+
 jobs:
   deploy:
     permissions: write-all
