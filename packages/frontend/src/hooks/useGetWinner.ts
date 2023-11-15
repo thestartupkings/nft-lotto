@@ -5,6 +5,7 @@ import { chooseTokenId } from "@startupkings/nft-lotto-contract";
 import { useGetRound } from "./useGetRound";
 import { useGetBlockHash } from "./useGetBlockHash";
 import { useGetCurrentRound } from "./useGetCurrentRound";
+import { zeroAddress } from "viem";
 
 export function useGetCurrentRoundWinner() {
   const { data: round } = useGetCurrentRound();
@@ -55,10 +56,7 @@ export function useGetRoundWinner({ roundId }: { roundId: number }) {
     isWinner,
     chosenTokenId,
     round,
-    claimedBy:
-      round?.[5] && round[5] !== "0x0000000000000000000000000000000000000000"
-        ? round[5]
-        : undefined,
+    claimedBy: round?.[6] && round[6] !== zeroAddress ? round[6] : undefined,
     isLoading,
   };
 }
