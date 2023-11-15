@@ -1,13 +1,15 @@
-import { formatEther } from "viem";
+import { formatEther, Address } from "viem";
 import { useGetUserRounds } from "@/hooks";
+import { ERC20Balance } from "..";
 
 interface Round {
-  nft: `0x${string}`;
+  nft: Address;
   from: bigint;
   to: bigint;
   blockHeight: bigint;
   prize: bigint;
-  winner: `0x${string}`;
+  winner: Address;
+  token: Address;
 }
 
 function RoundComponent({ roundId, round }: { round: Round; roundId: bigint }) {
@@ -16,6 +18,7 @@ function RoundComponent({ roundId, round }: { round: Round; roundId: bigint }) {
       <div className="">Round #{roundId.toString()} </div>
       <div className="text-[#ffc700] font-semibold">
         {formatEther(round.prize)} BONE
+        <ERC20Balance address={round.token} amount={round.prize} />
       </div>
     </div>
   );

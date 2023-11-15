@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useConfig } from "wagmi";
-import { formatEther } from "viem";
+
 import HistoryTabMenu from "./components/HistoryTabMenu";
 import AllHistoryCard from "./components/AllHistoryCard";
 import YourHistoryCard from "./components/YourHistoryCard";
@@ -12,7 +12,7 @@ import {
   useGetCurrentRound,
   useGetCurrentRoundWinner,
 } from "@/hooks";
-import { Fairness } from "./components";
+import { ERC20Balance, Fairness } from "./components";
 
 import zombie1Img from "./assets/images/zombie-1.png";
 import zombie2Img from "./assets/images/zombie-2.png";
@@ -64,7 +64,10 @@ function App() {
             {round ? (
               <>
                 <div className="text-6xl text-[#ffc700] font-semibold mb-3">
-                  {formatEther(round?.[0].prize)} BONE
+                  <ERC20Balance
+                    address={round[0].token}
+                    amount={round[0].prize}
+                  />
                 </div>
                 <div className="text-xl text-white font-bold text-center">
                   in prizes!
