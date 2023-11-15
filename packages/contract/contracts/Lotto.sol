@@ -23,7 +23,9 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
     mapping(uint256 => Round) public roundByIndex;
     mapping(address => mapping(uint256 => uint256)) private _userRounds;
     mapping(address => uint256) public userWinCount;
+
     address public signer;
+    mapping(address => bool) public admins;
 
     event RoundStarted(
         uint256 roundIndex,
@@ -31,13 +33,15 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         uint256 from,
         uint256 to,
         uint256 blockHeight,
-        uint256 prize
+        uint256 prize,
+        address creator
     );
     event RoundPrizeChanged(uint256 roundIndex, uint256 from, uint256 to);
     event PrizeClaimed(uint256 roundIndex);
 
     constructor(address _signer) {
         signer = _signer;
+        admins[msg.sender] = true;
     }
 
     function startNewRound(
@@ -46,7 +50,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         uint256 _to,
         uint256 _blockHeight,
         uint256 _prize
-    ) external payable onlyOwner {
+    ) external payable onlyAdmin {
         require(
             block.number < _blockHeight,
             "Unlock time should be in the future"
@@ -69,7 +73,15 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
             address(0)
         );
 
-        emit RoundStarted(totalRounds, _nft, _from, _to, _blockHeight, _prize);
+        emit RoundStarted(
+            totalRounds,
+            _nft,
+            _from,
+            _to,
+            _blockHeight,
+            _prize,
+            msg.sender
+        );
 
         totalRounds++;
     }
@@ -77,7 +89,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
     function addPrize(
         uint256 _roundIndex,
         uint256 _amount
-    ) external payable onlyOwner {
+    ) external payable onlyAdmin {
         require(
             block.timestamp < roundByIndex[_roundIndex].blockHeight,
             "Round already finished"
@@ -172,6 +184,19 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function addAdmin(address _admin) external onlyOwner {
+        admins[_admin] = true;
+    }
+
+    function removeAdmin(address _admin) external onlyOwner {
+        admins[_admin] = false;
+    }
+
+    modifier onlyAdmin() {
+        require(admins[msg.sender], "Only admin can call this function");
+        _;
     }
 
     function currentRound() external view returns (Round memory, uint256) {
