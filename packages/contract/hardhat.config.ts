@@ -1,3 +1,4 @@
+import { shibarium } from "./../frontend/src/config";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@typechain/hardhat";
@@ -16,6 +17,11 @@ const networks = process.env.HARDHAT_GOERLI_RPC_URL
         url: process.env.HARDHAT_GOERLI_RPC_URL!,
         accounts: [process.env.HARDHAT_PRIVATE_KEY!],
       },
+      shibarium: {
+        chainId: 109,
+        url: "https://www.shibrpc.com",
+        accounts: [process.env.HARDHAT_PRIVATE_KEY!],
+      },
     }
   : undefined;
 
@@ -29,7 +35,19 @@ const config: HardhatUserConfig = {
     dontOverrideCompile: false, // defaults to false
   },
   networks,
-  etherscan: { apiKey: process.env.HARDHAT_ETHERSCAN_API_KEY },
+  etherscan: {
+    apiKey: process.env.HARDHAT_ETHERSCAN_API_KEY,
+    customChains: [
+      {
+        network: "shibarium",
+        chainId: 109,
+        urls: {
+          apiURL: "https://www.shibariumscan.io/api",
+          browserURL: "https://www.shibariumscan.io",
+        },
+      },
+    ],
+  },
 };
 
 export default config;
