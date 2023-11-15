@@ -38,7 +38,9 @@ export default function YourHistoryCard() {
           ))}
         </>
       ) : (
-        <>You don't have win rounds.</>
+        <div className="text-white p-4 text-center">
+          You don't have win rounds.
+        </div>
       )}
     </div>
   );

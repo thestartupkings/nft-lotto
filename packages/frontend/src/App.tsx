@@ -47,10 +47,11 @@ function App() {
                 Zombium NFT Lottery
               </h2>
 
-              <p className="max-w-xl text-slate-300 font-medium mx-auto text-center">
-                Zombium Lottery is an innovative lottery game that teaches you
-                all things technical about blockchains. Learn to write smart
-                contracts by making your own crypto-collectibles game.
+              <p className="max-w-2xl text-slate-300 font-medium mx-auto text-center">
+                Zombium Lottery is provable lottery powered by Shibarium
+                Blockchain.
+                <br />
+                Buy Zombium NFT to increate chance to win!!!
               </p>
             </div>
 
