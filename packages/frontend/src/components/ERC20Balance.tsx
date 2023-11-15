@@ -17,7 +17,7 @@ export function ERC20Balance({
         <>Loading...</>
       ) : (
         <>
-          {parseFloat(formatUnits(amount, decimals || 18)).toFixed(2)}
+          {parseFloat(formatUnits(amount, decimals || 18)).toFixed(2)}&nbsp;
           <span className="text-[#ffc700]">{symbol || ""}</span>
         </>
       )}
