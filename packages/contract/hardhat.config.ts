@@ -4,6 +4,7 @@ import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomiclabs/hardhat-solhint";
+import "solidity-coverage";
 import { config as dotConfig } from "dotenv";
 
 dotConfig({ path: "../../.env" });

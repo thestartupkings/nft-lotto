@@ -14,7 +14,7 @@ export function useGetUserRounds() {
 
   return useContractRead({
     ...LotteryContract,
-    functionName: "userRounds",
+    functionName: "roundsOfUser",
     args: [address!, BigInt(0), winCount!],
     enabled: !!address && !!winCount,
   });

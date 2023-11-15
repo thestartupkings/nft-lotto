@@ -1,7 +1,8 @@
 import { config } from "dotenv";
-import { ethers } from "ethers";
+import { ZeroAddress, ethers } from "ethers";
 import {
   Lotto__factory,
+  IERC721Enumerable__factory,
   chooseTokenId,
 } from "@startupkings/nft-lotto-contract";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
@@ -55,12 +56,13 @@ export default async function handler(
       signature
     );
 
-    if (recoverdAddress !== address) {
-      response.status(400).send("Invalid winner");
+    const roundInfo = await lotto.roundByIndex(roundId);
+
+    if (roundInfo.winner !== ZeroAddress) {
+      response.status(400).send("Round already claimed");
       return;
     }
 
-    const roundInfo = await lotto.roundByIndex(roundId);
     const block = await provider.getBlock(roundInfo.blockHeight);
 
     if (!block || !block.hash) {
@@ -73,6 +75,17 @@ export default async function handler(
       Number(roundInfo.from),
       Number(roundInfo.to)
     );
+
+    const roundNft = IERC721Enumerable__factory.connect(
+      roundInfo.nft,
+      provider
+    );
+    const tokenOwner = await roundNft.ownerOf(winner);
+    if (recoverdAddress !== tokenOwner) {
+      response.status(400).send("Invalid winner");
+      return;
+    }
+
     const message = ethers.solidityPackedKeccak256(
       ["uint256", "uint256"],
       [roundInfo.blockHeight, winner]

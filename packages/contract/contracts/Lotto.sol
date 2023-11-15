@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 contract Lotto is Ownable, Pausable, ReentrancyGuard {
     struct Round {
@@ -13,6 +14,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         uint256 from;
         uint256 to;
         uint256 blockHeight;
+        address token;
         uint256 prize;
         address winner;
     }
@@ -33,6 +35,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         uint256 from,
         uint256 to,
         uint256 blockHeight,
+        address token,
         uint256 prize,
         address creator
     );
@@ -49,13 +52,19 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         uint256 _from,
         uint256 _to,
         uint256 _blockHeight,
+        address _token,
         uint256 _prize
-    ) external payable onlyAdmin {
+    ) external onlyAdmin {
         require(
             block.number < _blockHeight,
             "Unlock time should be in the future"
         );
-        require(msg.value == _prize, "Prize should be equal to msg.value");
+        bool result = IERC20(_token).transferFrom(
+            msg.sender,
+            address(this),
+            _prize
+        );
+        require(result, "Transfer failed");
 
         require(
             totalRounds == 0 ||
@@ -69,6 +78,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
             _from,
             _to,
             _blockHeight,
+            _token,
             _prize,
             address(0)
         );
@@ -79,6 +89,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
             _from,
             _to,
             _blockHeight,
+            _token,
             _prize,
             msg.sender
         );
@@ -86,19 +97,21 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         totalRounds++;
     }
 
-    function addPrize(
-        uint256 _roundIndex,
-        uint256 _amount
-    ) external payable onlyAdmin {
+    function addPrize(uint256 _roundIndex, uint256 _amount) external onlyAdmin {
         require(
-            block.timestamp < roundByIndex[_roundIndex].blockHeight,
+            block.number < roundByIndex[_roundIndex].blockHeight,
             "Round already finished"
         );
-        require(msg.value == _amount, "Prize should be equal to msg.value");
+        bool result = IERC20(roundByIndex[_roundIndex].token).transferFrom(
+            msg.sender,
+            address(this),
+            _amount
+        );
+        require(result, "Transfer failed");
 
         uint256 oldPrize = roundByIndex[_roundIndex].prize;
 
-        roundByIndex[_roundIndex].prize += msg.value;
+        roundByIndex[_roundIndex].prize += _amount;
         emit RoundPrizeChanged(
             _roundIndex,
             oldPrize,
@@ -106,13 +119,12 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
     }
 
-    // @notice disable for now
-    function _deductPrize(
+    function deductPrize(
         uint256 _roundIndex,
         uint256 _amount
-    ) internal onlyOwner {
+    ) external onlyAdmin {
         require(
-            block.timestamp < roundByIndex[_roundIndex].blockHeight,
+            block.number < roundByIndex[_roundIndex].blockHeight,
             "Round already finished"
         );
 
@@ -121,7 +133,11 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
         roundByIndex[_roundIndex].prize -= _amount;
 
-        payable(owner()).transfer(_amount);
+        bool result = IERC20(roundByIndex[_roundIndex].token).transfer(
+            msg.sender,
+            _amount
+        );
+        require(result, "Transfer failed");
 
         emit RoundPrizeChanged(
             _roundIndex,
@@ -136,8 +152,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         bytes memory _signature
     ) external nonReentrant {
         require(
-            block.timestamp >= roundByIndex[_roundIndex].blockHeight,
-            "You can't withdraw yet"
+            block.number >= roundByIndex[_roundIndex].blockHeight,
+            "You can't claim yet"
         );
         require(
             roundByIndex[_roundIndex].winner == address(0),
@@ -165,9 +181,14 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         _userRounds[msg.sender][userWinCount[msg.sender]] = _roundIndex;
         userWinCount[msg.sender]++;
 
-        emit PrizeClaimed(_roundIndex);
+        // Transfer prize
+        bool result = IERC20(roundByIndex[_roundIndex].token).transfer(
+            msg.sender,
+            roundByIndex[_roundIndex].prize
+        );
+        require(result, "Transfer failed");
 
-        payable(msg.sender).transfer(roundByIndex[_roundIndex].prize);
+        emit PrizeClaimed(_roundIndex);
     }
 
     function setSigner(address _signer) external onlyOwner {
@@ -180,10 +201,6 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function unpause() external onlyOwner {
         _unpause();
-    }
-
-    function withdraw() external onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
     }
 
     function addAdmin(address _admin) external onlyOwner {
@@ -216,7 +233,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         return roundByIndex[_userRounds[_user][_index]];
     }
 
-    function userRounds(
+    function roundsOfUser(
         address _user,
         uint256 _skip,
         uint256 _limit
