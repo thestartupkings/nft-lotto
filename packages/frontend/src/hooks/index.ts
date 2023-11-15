@@ -5,3 +5,4 @@ export * from "./useClaimPrize";
 export * from "./useGetTotalRounds";
 export * from "./useGetRound";
 export * from "./useGetUserRounds";
+export * from "./useGetERC20Info";
