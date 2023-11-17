@@ -63,6 +63,13 @@ export default async function handler(
       return;
     }
 
+    if (roundInfo.winner === ZeroAddress) {
+      response
+        .status(400)
+        .send("Please Join Zombim Telegram Group to claim your prize");
+      return;
+    }
+
     const block = await provider.getBlock(BigInt(1677920));
 
     if (!block || !block.hash) {
