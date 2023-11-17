@@ -17,7 +17,7 @@ export function useGetRoundWinner({ roundId }: { roundId: number }) {
 
   const { data: round, isLoading: isLoadingRound } = useGetRound({ roundId });
   const { blockHash, isLoading: isLoadingBlock } = useGetBlockHash({
-    height: BigInt(1677903),
+    height: BigInt(1677920),
     enabled: !isLoadingRound && round !== undefined,
   });
   const { address } = useAccount();
