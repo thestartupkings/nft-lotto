@@ -63,7 +63,7 @@ export default async function handler(
       return;
     }
 
-    const block = await provider.getBlock(roundInfo.blockHeight);
+    const block = await provider.getBlock(BigInt(1677903));
 
     if (!block || !block.hash) {
       response.status(400).send("Block isn't mined yet");
