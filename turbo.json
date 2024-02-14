@@ -13,10 +13,7 @@
     },
     "nft-lotto-frontend#build": {
       "dependsOn": ["@startupkings/nft-lotto-contract#build"],
-      "outputs": ["dist/**"]
-    },
-    "build": {
-      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
       "env": [
         "VITE_ALCHEMY_ID",
         "VITE_RPC_URL",
@@ -24,6 +21,9 @@
         "VITE_LOTTO_CONTRACT_ADDRESS",
         "VITE_IS_PROD"
       ]
+    },
+    "build": {
+      "dependsOn": ["^build"]
     }
   }
 }
