@@ -16,7 +16,14 @@
       "outputs": ["dist/**"]
     },
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": [
+        "VITE_ALCHEMY_ID",
+        "VITE_RPC_URL",
+        "VITE_CHAIN_ID",
+        "VITE_LOTTO_CONTRACT_ADDRESS",
+        "VITE_IS_PROD"
+      ]
     }
   }
 }
