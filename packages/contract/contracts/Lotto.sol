@@ -21,7 +21,6 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     uint256 public totalRounds;
 
-    mapping(uint256 => uint256) public roundIdByBlockHeight;
     mapping(uint256 => Round) public roundByIndex;
     mapping(address => mapping(uint256 => uint256)) private _userRounds;
     mapping(address => uint256) public userWinCount;
@@ -40,7 +39,8 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         address creator
     );
     event RoundPrizeChanged(uint256 roundIndex, uint256 from, uint256 to);
-    event PrizeClaimed(uint256 roundIndex);
+    event RoundBlockHeightChanged(uint256 roundIndex, uint256 blockHeight);
+    event PrizeClaimed(uint256 roundIndex, address winner);
 
     constructor(address _signer) {
         signer = _signer;
@@ -66,13 +66,6 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
         require(result, "Transfer failed");
 
-        require(
-            totalRounds == 0 ||
-                (totalRounds > 0 && roundIdByBlockHeight[_blockHeight] == 0),
-            "Round already exist for given block height"
-        );
-
-        roundIdByBlockHeight[_blockHeight] = totalRounds;
         roundByIndex[totalRounds] = Round(
             _nft,
             _from,
@@ -95,6 +88,20 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
 
         totalRounds++;
+    }
+
+    function changeBlockHeight(
+        uint256 _roundIndex,
+        uint256 _blockHeight
+    ) external onlyAdmin {
+        require(
+            roundByIndex[_roundIndex].winner == address(0),
+            "Round already finished"
+        );
+
+        roundByIndex[_roundIndex].blockHeight = _blockHeight;
+
+        emit RoundBlockHeightChanged(_roundIndex, _blockHeight);
     }
 
     function addPrize(uint256 _roundIndex, uint256 _amount) external onlyAdmin {
@@ -188,7 +195,7 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
         );
         require(result, "Transfer failed");
 
-        emit PrizeClaimed(_roundIndex);
+        emit PrizeClaimed(_roundIndex, msg.sender);
     }
 
     function setSigner(address _signer) external onlyOwner {
@@ -218,12 +225,6 @@ contract Lotto is Ownable, Pausable, ReentrancyGuard {
 
     function currentRound() external view returns (Round memory, uint256) {
         return (roundByIndex[totalRounds - 1], totalRounds - 1);
-    }
-
-    function roundByBlockHeight(
-        uint256 _blockHeight
-    ) external view returns (Round memory) {
-        return roundByIndex[roundIdByBlockHeight[_blockHeight]];
     }
 
     function roundOfUserByIndex(

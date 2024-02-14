@@ -49,13 +49,9 @@ describe("Lotto", function () {
       expect(lottery.blockHeight).to.equal(blockHeight);
       expect(lottery.prize).to.equal(prize);
       expect(lottery.winner).to.equal(ZeroAddress);
-      expect(await lotto.roundIdByBlockHeight(blockHeight)).to.equal(0);
 
       const currentRound = await lotto.currentRound();
       expect(currentRound[1]).to.equal(0);
-
-      const round = await lotto.roundByBlockHeight(blockHeight);
-      expect(round).to.deep.equal(currentRound[0]);
     });
 
     it("Should admin create new rounds", async function () {
@@ -76,7 +72,6 @@ describe("Lotto", function () {
       expect(lottery0.blockHeight).to.equal(blockHeight);
       expect(lottery0.prize).to.equal(prize);
       expect(lottery0.winner).to.equal(ZeroAddress);
-      expect(await lotto.roundIdByBlockHeight(blockHeight)).to.equal(0);
 
       const prize1 = ethers.parseEther("2");
       const blockHeight1 = currentBlock + 10;
@@ -92,7 +87,6 @@ describe("Lotto", function () {
       expect(lottery1.blockHeight).to.equal(blockHeight1);
       expect(lottery1.prize).to.equal(prize);
       expect(lottery1.winner).to.equal(ZeroAddress);
-      expect(await lotto.roundIdByBlockHeight(blockHeight1)).to.equal(1);
     });
 
     it("Should owner add prize to the exist round", async function () {
@@ -110,7 +104,6 @@ describe("Lotto", function () {
       expect(lottery.blockHeight).to.equal(blockHeight);
       expect(lottery.prize).to.equal(prize);
       expect(lottery.winner).to.equal(ZeroAddress);
-      expect(await lotto.roundIdByBlockHeight(blockHeight)).to.equal(0);
 
       const newPrize = ethers.parseEther("2");
       await tRewardToken.approve(lotto, newPrize);
@@ -135,7 +128,6 @@ describe("Lotto", function () {
       expect(lottery.blockHeight).to.equal(blockHeight);
       expect(lottery.prize).to.equal(prize);
       expect(lottery.winner).to.equal(ZeroAddress);
-      expect(await lotto.roundIdByBlockHeight(blockHeight)).to.equal(0);
 
       const amount = ethers.parseEther("1");
 
