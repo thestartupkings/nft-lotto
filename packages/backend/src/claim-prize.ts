@@ -64,9 +64,10 @@ export default async function handler(
     }
 
     if (roundInfo.winner === ZeroAddress) {
-      response
-        .status(400)
-        .send("Please Join Zombim Telegram Group to claim your prize");
+      response.status(400).send({
+        message: "Please Join Zombim Telegram Group to claim your prize",
+        action: "https://t.me/Zombium",
+      });
       return;
     }
 

@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^10.0.4",
     "viem": "^1.18.9",
     "wagmi": "^1.4.6"
   },

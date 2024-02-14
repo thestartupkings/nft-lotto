@@ -7,6 +7,8 @@ import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { FC, ReactNode } from "react";
 import { shibarium, IS_PROD } from "./config";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CHAINS = IS_PROD ? [shibarium] : [goerli];
 
@@ -39,6 +41,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <WagmiConfig config={config}>
       <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+      <ToastContainer />
     </WagmiConfig>
   );
 };

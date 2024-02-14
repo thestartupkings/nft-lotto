@@ -7,6 +7,8 @@ import {
   useSignMessage,
   useAccount,
 } from "wagmi";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 import { claimPrize } from "@/api";
 import { LotteryContract } from "@/config";
@@ -42,21 +44,29 @@ export function useClaimPrize({
 
   const claim = useCallback(async () => {
     if (!address || roundId === undefined) return;
-    console.log(`claiming...`, address, roundId);
 
-    const addressSingature = await signMessageAsync({ message: address });
+    try {
+      const addressSingature = await signMessageAsync({ message: address });
 
-    const { signature } = await claimPrize(
-      Number(roundId),
-      address,
-      addressSingature
-    );
-    setSignature(signature);
+      const { signature } = await claimPrize(
+        Number(roundId),
+        address,
+        addressSingature
+      );
+      setSignature(signature);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const action = error.response?.data?.action;
+        toast.error(error.response?.data?.message || "Failed to claim prize", {
+          onClick: action ? () => window.open(action, "_blank") : undefined,
+        });
+      }
+    }
   }, [address, roundId, signMessageAsync]);
 
   useEffect(() => {
     if (!signature) return;
-    console.log(`first`);
+
     write?.();
   }, [signature, write]);
 
