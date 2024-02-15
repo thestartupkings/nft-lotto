@@ -63,7 +63,7 @@ function App() {
           <div className="text-center text-white">
             {round ? (
               <>
-                <div className="text-6xl text-[#ffc700] font-semibold mb-3">
+                <div className="text-2xl md:text-6xl text-[#ffc700] font-semibold mb-3">
                   <ERC20Balance
                     address={round[0].token}
                     amount={round[0].prize}
@@ -80,8 +80,9 @@ function App() {
                 !claimedBy ? (
                   <div className="flex flex-col items-center justify-center gap-2">
                     <p className="text-xl">
-                      The winner is&nbsp;
-                      <span className="text-2xl text-[#ffc700] font-semibold">
+                      The winner is
+                      <br />
+                      <span className="text-sm md:text-2xl text-[#ffc700] font-semibold">
                         {isWinner ? "You 🎉🎉🎉!" : winner}
                       </span>
                     </p>
@@ -132,19 +133,17 @@ function App() {
         </section>
       </div>
 
-      <div className="py-12">
-        <div className="flex flex-col items-center">
-          <h2 className="text-4xl text-[white] font-bold text-center mb-6">
-            Finished Rounds
-          </h2>
+      <div className="max-w-xs md:max-w-lg mx-auto py-12 flex flex-col items-center">
+        <h2 className="text-4xl text-[white] font-bold text-center mb-6">
+          Finished Rounds
+        </h2>
 
-          <HistoryTabMenu
-            activeIndex={historyTabMenuIndex}
-            setActiveIndex={setHistoryTabMenuIndex}
-          />
+        <HistoryTabMenu
+          activeIndex={historyTabMenuIndex}
+          setActiveIndex={setHistoryTabMenuIndex}
+        />
 
-          {historyTabMenuIndex === 0 ? <AllHistoryCard /> : <YourHistoryCard />}
-        </div>
+        {historyTabMenuIndex === 0 ? <AllHistoryCard /> : <YourHistoryCard />}
       </div>
 
       <div className="container mx-auto px-4 py-12">

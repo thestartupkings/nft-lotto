@@ -4,7 +4,7 @@ import shibaLogo from "../assets/images/shiba.svg";
 export default function Footer() {
   return (
     <div className="px-10 py-10 text-white">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <span>Copyright © 2023 Zombium - All Rights Reserved.</span>
         <div className="flex gap-5">
           <a href="https://x.com/Zombium" target="_blank">
